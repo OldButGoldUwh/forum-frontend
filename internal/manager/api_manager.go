@@ -69,6 +69,3 @@ func (a *APIManager) Delete(url string) (*http.Response, error) {
 	return a.Request("DELETE", url, nil)
 }
 
-func (a *APIManager) CisemFunc() {
-	fmt.Println("Cisem")
-}
