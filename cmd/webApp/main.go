@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"golang-forum-frontend/internal/handler"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -16,9 +17,14 @@ func main() {
 
 	// Route for the home handler
 	router.HandleFunc("/", handler.HomeHandler)
-	router.HandleFunc("/login.html", handler.LoginHandler)
+	router.HandleFunc("/login.html", handler.LoginPageHandler).Methods("GET")
+	router.HandleFunc("/login.html", handler.LoginFormHandler).Methods("POST")
 	router.HandleFunc("/register.html", handler.RegisterHandler)
 	router.HandleFunc("/register", handler.RegisterHandler)
+	router.HandleFunc("/logout", handler.LogoutHandler)
+	router.HandleFunc("/post/{id}", handler.PostHandler).Methods("GET")
+	router.HandleFunc("/add-post", handler.AddPostHandler).Methods("GET")
+	router.HandleFunc("/add-post", handler.AddPostSubmitHandler).Methods("POST")
 
 	// Starting the server
 	log.Println("Starting server on :8081")

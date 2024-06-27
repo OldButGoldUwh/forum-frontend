@@ -2,12 +2,61 @@
 
 body {
     font-family: "Inter", sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     margin: 0 auto;
     max-width: 1280px;
     color: blue;
+}
+.post-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px;
+}
+
+/* Card style for each post */
+.post {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    width: 300px;
+    box-sizing: border-box;
+    transition: transform 0.2s;
+}
+
+/* Hover effect for the card */
+.post:hover {
+    transform: scale(1.05);
+}
+
+/* Centered title */
+.post h2 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+/* Content styling */
+.post p {
+    font-size: 1em;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Small text for author or other details */
+.post small {
+    display: block;
+    text-align: right;
+    color: #999;
+    margin-top: 10px;
 }
 
 .post-row {
@@ -271,3 +320,4 @@ nav {
         text-decoration: none;
     }
 }
+

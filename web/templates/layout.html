@@ -1,22 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ block "title" . }}My Web App{{ end }}</title>
+    <title>{{ template "title" . }}</title>
     <link rel="stylesheet" href="/web/static/style.css">
 </head>
 <body>
-    <!-- Navigation menu could go here -->
-    {{template "navbar" .}}
-<main>
-    {{ block "content" . }}{{ end }}
-</main>
-<footer>
-    <div class="container">
-        <p>&copy; 2024 My Web App</p>
+    {{ template "navbar" . }}
+    <div class="content">
+        {{ template "content" . }}
     </div>
-</footer>
-<script src="/static/js/scripts.js"></script>
 </body>
 </html>

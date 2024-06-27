@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// TODO Add error handling to the APIManager
+
 // APIManager handles API requests with proper authentication.
 type APIManager struct {
 	client     *http.Client
@@ -24,20 +26,33 @@ func NewAPIManager() *APIManager {
 	}
 }
 
+// NewAPIManagerWithToken initializes the API manager with a guest token and optionally a user token.
+func NewAPIManagerWithToken(userToken string) *APIManager {
+	manager := &APIManager{
+		client:     &http.Client{Timeout: 10 * time.Second},
+		guestToken: "0fc237962e95129004c313015d220aef4c7ffddc465cf984d1e63130b6e180c8",
+		isUserAuth: false,
+	}
+
+	if userToken != "" {
+		manager.SetUserToken(userToken)
+	}
+
+	return manager
+}
+
 // SetUserToken sets the user token and marks the user as authenticated.
 func (a *APIManager) SetUserToken(token string) {
 	a.userToken = token
 	a.isUserAuth = true
 }
 
-// Request makes an API request with the appropriate authentication header.
 func (a *APIManager) Request(method, url string, body []byte) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
 
-	// Set the Authorization header
 	if a.isUserAuth {
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", a.userToken))
 	} else {
@@ -49,7 +64,6 @@ func (a *APIManager) Request(method, url string, body []byte) (*http.Response, e
 	return a.client.Do(req)
 }
 
-// Get performs a GET request.
 func (a *APIManager) Get(url string) (*http.Response, error) {
 	return a.Request("GET", url, nil)
 }
@@ -68,4 +82,3 @@ func (a *APIManager) Put(url string, body []byte) (*http.Response, error) {
 func (a *APIManager) Delete(url string) (*http.Response, error) {
 	return a.Request("DELETE", url, nil)
 }
-

@@ -1,11 +1,29 @@
-{{define "post"}}
-<section class="container">
-    <div class="post-row">
-        <div class="post-left">
-            <img src="/web/static/01.png" alt="">
-        </div>
-        <div class="post-middle">Middle</div>
-        <div class="post-right">Right</div>
+{{ define "title" }}Home - POST Page
+{{ end }}
+
+{{ define "content" }}
+    <div>
+       {{ template "post" .Post}}
     </div>
-</section>
-{{end}}
+{{ end }}
+
+{{ define "post" }}
+<div class="post-container" style="display: flex; justify-content: center; align-items: center; margin: 20px;">
+    <div class="post" style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; width: 80%; box-sizing: border-box;">
+        <h2 style="text-align: center; font-size: 1.5em; margin-bottom: 10px;">{{ .Title }}</h2>
+        <p style="font-size: 1em; color: #333; line-height: 1.6;">{{ .Content }}</p>
+        <small style="display: block; text-align: right; color: #999; margin-top: 10px;">{{ .Author }}</small>
+    </div>
+</div>
+{{ range .Comments}}
+    <div>
+        <div class="comment" style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; width: 80%; box-sizing: border-box;">
+            <p style="font-size: 1em; color: #333; line-height: 1.6;">{{.Content }}</p>
+        </div>    
+       
+            
+    </div>
+{{ end }}
+{{ end }}
+
+
