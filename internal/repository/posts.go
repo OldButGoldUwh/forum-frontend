@@ -34,6 +34,10 @@ func GetPosts() ([]models.Post, error) {
 			return nil, err
 		}
 
+		for i := 0; i < len(posts); i++ {
+			posts[i].Author, _ = GetUserNameFromId(posts[i].UserID)
+		}
+
 	}
 
 	return posts, nil
@@ -45,7 +49,6 @@ func GetPost(postId string) (models.Post, error) {
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
 	postApiUrl := apiUrlManager.GetPostsApiURL() + "/" + postId
-	fmt.Println("Post API URL:", postApiUrl) // Log the post API URL
 
 	postResponse, errPost := apiManager.Get(postApiUrl)
 	if errPost != nil {
@@ -55,14 +58,28 @@ func GetPost(postId string) (models.Post, error) {
 	if postResponse.StatusCode == http.StatusOK {
 		defer postResponse.Body.Close()
 		body, err := io.ReadAll(postResponse.Body)
+
+		postAuthor, errUser := GetUserNameFromId(post.UserID)
+		if errUser != nil {
+			return post, errUser
+		}
+
 		if err != nil {
 			return post, err
 		}
 
 		err = json.Unmarshal(body, &post)
-		if err != nil {
-			return post, err
+		postAuthor, _ = GetUserNameFromId(post.UserID)
+
+		newPost := models.Post{
+			ID:        post.ID,
+			Title:     post.Title,
+			Content:   post.Content,
+			UpdatedAt: post.UpdatedAt,
+			CreatedAt: post.CreatedAt,
+			Author:    postAuthor,
 		}
+		return newPost, err
 
 	}
 
@@ -73,14 +90,14 @@ func AddPost(post models.Post) error {
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
 	postApiUrl := apiUrlManager.GetPostsApiURL()
-	fmt.Println("Post API URL:", postApiUrl) // Log the post API URL
-
+	fmt.Println("POST : ", post)
 	body, err := json.Marshal(post)
 	if err != nil {
 		return err
 	}
-
+	fmt.Println("Body :", string(body))
 	postResponse, errPost := apiManager.Post(postApiUrl, body)
+
 	if errPost != nil {
 
 		return errPost

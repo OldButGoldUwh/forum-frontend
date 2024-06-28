@@ -10,6 +10,8 @@ import (
 // TODO Add error handling to the APIManager
 
 // APIManager handles API requests with proper authentication.
+const guestToken = "0fc237962e95129004c313015d220aef4c7ffddc465cf984d1e63130b6e180c8"
+
 type APIManager struct {
 	client     *http.Client
 	guestToken string
@@ -21,7 +23,7 @@ type APIManager struct {
 func NewAPIManager() *APIManager {
 	return &APIManager{
 		client:     &http.Client{Timeout: 10 * time.Second},
-		guestToken: "0fc237962e95129004c313015d220aef4c7ffddc465cf984d1e63130b6e180c8",
+		guestToken: guestToken,
 		isUserAuth: false,
 	}
 }
@@ -30,7 +32,7 @@ func NewAPIManager() *APIManager {
 func NewAPIManagerWithToken(userToken string) *APIManager {
 	manager := &APIManager{
 		client:     &http.Client{Timeout: 10 * time.Second},
-		guestToken: "0fc237962e95129004c313015d220aef4c7ffddc465cf984d1e63130b6e180c8",
+		guestToken: guestToken,
 		isUserAuth: false,
 	}
 
@@ -81,4 +83,8 @@ func (a *APIManager) Put(url string, body []byte) (*http.Response, error) {
 // Delete performs a DELETE request.
 func (a *APIManager) Delete(url string) (*http.Response, error) {
 	return a.Request("DELETE", url, nil)
+}
+
+func (a *APIManager) GetGuestToken() string {
+	return guestToken
 }

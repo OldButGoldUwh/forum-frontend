@@ -7,10 +7,13 @@ type apiUrls struct {
 	PostsApiUrl    string
 	PostApiUrl     string
 	CommentsApiUrl string
+	GetUsersApiUrl string
 }
 
 const (
 	GetUserApiUrl  = "http://localhost:8080/api/v1/user"
+	GetUsersApiUrl = "http://localhost:8080/api/v1/users"
+
 	LoginApiUrl    = "http://localhost:8080/api/v1/users/login"
 	UserApiUrl     = "http://localhost:8080/api/v1/users"
 	PostsApiUrl    = "http://localhost:8080/api/v1/posts"
@@ -21,10 +24,15 @@ func NewAPIUrls() *apiUrls {
 	return &apiUrls{
 		LoginApiUrl:    LoginApiUrl,
 		GetUserApiUrl:  GetUserApiUrl,
+		GetUsersApiUrl: GetUsersApiUrl,
 		UserApiUrl:     UserApiUrl,
 		PostsApiUrl:    PostsApiUrl,
 		CommentsApiUrl: CommentsApiUrl,
 	}
+}
+
+func (a *apiUrls) GetUsersApiURL() string {
+	return a.GetUsersApiUrl
 }
 
 func (a *apiUrls) GetLoginApiURL() string {

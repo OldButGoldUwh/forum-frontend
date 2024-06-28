@@ -68,17 +68,28 @@ func GetPostComments(commentId string, token string) ([]models.Comment, error) {
 			return nil, err
 		}
 
+		for i, comment := range comments {
+			fmt.Println("Comment:", comment.UserID)
+			username, _ := GetUserNameFromId(comment.UserID)
+
+			comments[i].Author = username
+			fmt.Println("Username:", username)
+		}
+
 		return comments, nil
 	}
 
 	return comments, nil
 }
 
-func AddComment(postId string, comment models.Comment) error {
+func AddComment(postId string, comment models.Comment, userId int) error {
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
 	commentApiUrl := apiUrlManager.GetPostsApiURL() + "/" + postId + "/comments"
-
+	comment.UserID = userId
+	fmt.Println("Comment:", comment)
+	fmt.Println("Comment API URL:", commentApiUrl)
+	fmt.Println("userId :", userId)
 	body, err := json.Marshal(comment)
 	if err != nil {
 		return err

@@ -35,15 +35,28 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 
 func AddPostSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		title := r.FormValue("title")
-		content := r.FormValue("content")
-
-		post := models.Post{
-			Title:   title,
-			Content: content,
+		// Get token from cookie
+		token, err := r.Cookie("token")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
-		err := repository.AddPost(post)
+		title := r.FormValue("title")
+		content := r.FormValue("content")
+		userId := repository.GetUserId(token.Value)
+		post := models.Post{
+
+			Title:   title,
+			Content: content,
+			UserID:  userId,
+		}
+
+		fmt.Println("Title:", title)
+		fmt.Println("Content:", content)
+		fmt.Println("User ID:", userId)
+
+		err = repository.AddPost(post)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

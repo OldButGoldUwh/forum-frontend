@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"golang-forum-frontend/internal/manager"
 	"golang-forum-frontend/internal/models"
 	"golang-forum-frontend/internal/repository"
 	"html/template"
@@ -19,16 +20,17 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	postHtml := filepath.Join("web", "templates", "post.html")
 
 	cookie, err := r.Cookie("token")
+	apiManager := manager.NewAPIManager()
 	var token string
 	if err != nil {
-
-		fmt.Println("Error:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		token = "0fc237962e95129004c313015d220aef4c7ffddc465cf984d1e63130b6e180c8"
-	} else {
-
-		token = cookie.Value
+		guestToken := apiManager.GetGuestToken()
+		cookie = &http.Cookie{
+			Name:  "token",
+			Value: guestToken,
+		}
 	}
+
+	token = cookie.Value
 
 	vars := mux.Vars(r)
 	postID := vars["id"]
@@ -58,13 +60,12 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	username, err := repository.GetUsername(r)
 
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error 22:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("Username:", username) // Log the username
-
+	fmt.Println("Username:", username)
 	data := struct {
 		Post     models.Post
 		Comments []models.Comment
@@ -82,7 +83,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostCommentsHandler(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("Get Post Comments Handler")
 	vars := mux.Vars(r)
 	postID := vars["id"]
 
@@ -111,6 +112,17 @@ func GetPostCommentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Wait for the comments to be fetched and then send them as a response
 	comments := <-commentsChan
+	fmt.Println("Comments:", comments)
+	for i, comment := range comments {
+		fmt.Println("Comment:", comment)
+		username, err := repository.GetUserNameFromId(comment.UserID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		comments[i].Author = username
+		fmt.Println("Username:", username)
+	}
 
 	jsonData, err := json.Marshal(comments)
 	if err != nil {

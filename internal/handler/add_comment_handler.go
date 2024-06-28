@@ -8,13 +8,16 @@ import (
 )
 
 func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Add Comment Handler")
 	if r.Method == http.MethodPost {
+		token, err := r.Cookie("token")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		postID := r.FormValue("postID")
 		content := r.FormValue("content")
-		fmt.Println("Post ID:", postID)  // Debug statement
-		fmt.Println("Content:", content) // Debug statement
+		userId := repository.GetUserId(token.Value)
 
 		if postID == "" {
 			http.Error(w, "Post ID eksik", http.StatusBadRequest)
@@ -23,9 +26,12 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		comment := models.Comment{
 			Content: content,
+			UserID:  userId,
 		}
-
-		err := repository.AddComment(postID, comment)
+		fmt.Println("Post ID:", postID)
+		fmt.Println("Comment:", comment)
+		fmt.Println("User ID:", userId)
+		err = repository.AddComment(postID, comment, userId)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

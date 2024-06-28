@@ -35,7 +35,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
-	apiURL := apiUrlManager.GetUserApiURL()
+	apiURL := apiUrlManager.GetUsersApiURL()
 	response, errR := apiManager.Post(apiURL, jsonData)
 
 	if errR != nil {

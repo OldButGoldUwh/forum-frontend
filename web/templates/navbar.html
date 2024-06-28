@@ -11,8 +11,8 @@
 
         {{template "search" .}}
         <div class="menu-login">
-            {{if .Username}}
-                <span>Hoş geldin, {{.Username}}</span>
+            {{if and .Username (ne .Username "Guest") }}
+            <span>Hoş geldin, {{.Username}}</span>
                 <a href="/logout">Çıkış Yap</a>
             {{else}}
                 <a href="register.html">kayıt ol</a>

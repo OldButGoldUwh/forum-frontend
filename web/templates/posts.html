@@ -77,9 +77,11 @@
     </style>
 </head>
 <body>
+    {{if .Username}}
     <div>
         <button onclick="window.location.href='/add-post'" style="position: fixed;  right: 20px;">Add New Post</button>
     </div>
+    {{ end}}
     <div class="post-container">
         
         {{ range .Posts }}
@@ -89,6 +91,7 @@
             <div class="post-footer">
                 <span>Comments: {{  .CommentLength }}</span> <!-- Display the length of the Comments slice -->
                 <span>Likes: {{ .Likes }}</span>
+                <small style="display: block; text-align: right; color: #999; margin-top: 10px;">{{ .Author }}</small>
             </div>
         </div>
         {{ else }}

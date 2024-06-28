@@ -26,13 +26,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := r.Cookie("token")
-
 	var username string
 	var posts []models.Post
 
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
+	token, _ := r.Cookie("token")
 
 	if token != nil {
 		apiManager.SetUserToken(token.Value)
@@ -40,7 +39,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		apiURL := apiUrlManager.GetUserApiURL()
 
 		userResponse, err := apiManager.Get(apiURL)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -48,23 +46,29 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		if userResponse.StatusCode == http.StatusOK {
 			defer userResponse.Body.Close()
 			body, err := io.ReadAll(userResponse.Body)
+			fmt.Println("User Response Body:", string(body)) // Log the response body
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
 			var user models.User
+			fmt.Println("User Response Body:", string(body)) // Log the response body
 			err = json.Unmarshal(body, &user)
+			fmt.Println("User : ", user)
+
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				fmt.Println("Error unmarshalling user data")
+				http.Error(w, "Error unmarshalling user data", http.StatusInternalServerError)
 				return
 			}
-
 			username = user.Username
 
 		}
 
 	}
+
+	fmt.Println("4444")
 
 	posts, _ = repository.GetPosts()
 	data := struct {
