@@ -29,14 +29,11 @@ func GetPosts() ([]models.Post, error) {
 			return nil, err
 		}
 
-		fmt.Println("API Response Body:", string(body)) // Log the response body
-
 		err = json.Unmarshal(body, &posts)
 		if err != nil {
 			return nil, err
 		}
 
-		fmt.Println("Unmarshalled Posts:", posts) // Log the unmarshalled posts
 	}
 
 	return posts, nil
@@ -62,17 +59,13 @@ func GetPost(postId string) (models.Post, error) {
 			return post, err
 		}
 
-		fmt.Println("API Response Body:", string(body)) // Log the response body
-
 		err = json.Unmarshal(body, &post)
 		if err != nil {
 			return post, err
 		}
 
-		fmt.Println("Unmarshalled Posts:", post) // Log the unmarshalled posts
 	}
 
-	fmt.Println("API Response Status:", postResponse.StatusCode) // Log the response status code
 	return post, nil
 }
 

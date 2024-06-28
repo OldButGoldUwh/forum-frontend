@@ -30,7 +30,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	var username string
 	var posts []models.Post
-	var comments []models.Comment
 
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
@@ -68,15 +67,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	posts, _ = repository.GetPosts()
-	comments, _ = repository.GetComments()
 	data := struct {
 		Username string
 		Posts    []models.Post
-		Comments []models.Comment
 	}{
 		Username: username,
 		Posts:    posts,
-		Comments: comments,
 	}
 
 	err = tmpl.Execute(w, data)

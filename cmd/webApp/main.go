@@ -23,8 +23,12 @@ func main() {
 	router.HandleFunc("/register", handler.RegisterHandler)
 	router.HandleFunc("/logout", handler.LogoutHandler)
 	router.HandleFunc("/post/{id}", handler.PostHandler).Methods("GET")
+	router.HandleFunc("/add-comment", handler.AddCommentHandler).Methods("POST")
+	router.HandleFunc("/get-post-comments", handler.GetPostCommentsHandler).Methods("GET")
 	router.HandleFunc("/add-post", handler.AddPostHandler).Methods("GET")
 	router.HandleFunc("/add-post", handler.AddPostSubmitHandler).Methods("POST")
+	//router.HandleFunc("/search", handler.SearchHandler).Methods("GET")
+	router.HandleFunc("/add-comment", handler.AddCommentHandler).Methods("POST")
 
 	// Starting the server
 	log.Println("Starting server on :8081")

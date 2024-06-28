@@ -42,7 +42,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Kayıt işlemi sırasında hata oluştu", http.StatusInternalServerError)
 		return
 	} else if response.StatusCode == http.StatusCreated {
-		fmt.Println(response.StatusCode)
+		fmt.Println("Register : ", response.StatusCode)
 		data := struct {
 			Email    string
 			Password string

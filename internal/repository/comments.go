@@ -2,20 +2,25 @@ package repository
 
 import (
 	"encoding/json"
+	"fmt"
 	"golang-forum-frontend/internal/manager"
 	"golang-forum-frontend/internal/models"
 	"io"
 	"net/http"
 )
 
-func GetComments() ([]models.Comment, error) {
+func GetComments(token string) ([]models.Comment, error) {
 	var comments []models.Comment
 
 	apiManager := manager.NewAPIManager()
 	apiUrlManager := manager.NewAPIUrls()
+	apiManager.SetUserToken(token)
 	commentsApiUrl := apiUrlManager.GetCommentsApiURL()
-
+	fmt.Println("Comments API URL:", commentsApiUrl) // Log the comments API URL
 	commentsResponse, errComment := apiManager.Get(commentsApiUrl)
+
+	fmt.Println("GetComments Status:", commentsResponse.StatusCode)
+
 	if errComment != nil {
 		return nil, errComment
 	}
@@ -37,14 +42,20 @@ func GetComments() ([]models.Comment, error) {
 	return comments, nil
 }
 
-func GetPostComments(commentId string) ([]models.Comment, error) {
+func GetPostComments(commentId string, token string) ([]models.Comment, error) {
 	var comments []models.Comment
 	var commentResponse *http.Response
 
 	apiManager := manager.NewAPIManager()
+	apiManager.SetUserToken(token)
 	apiUrlManager := manager.NewAPIUrls()
 	commentApiUrl := apiUrlManager.GetPostsApiURL() + "/" + commentId + "/comments"
 	commentResponse, errComment := apiManager.Get(commentApiUrl)
+
+	if errComment != nil {
+		return nil, errComment
+	}
+
 	if commentResponse.StatusCode == http.StatusOK {
 		defer commentResponse.Body.Close()
 		body, err := io.ReadAll(commentResponse.Body)
@@ -57,11 +68,41 @@ func GetPostComments(commentId string) ([]models.Comment, error) {
 			return nil, err
 		}
 
+		return comments, nil
 	}
 
+	return comments, nil
+}
+
+func AddComment(postId string, comment models.Comment) error {
+	apiManager := manager.NewAPIManager()
+	apiUrlManager := manager.NewAPIUrls()
+	commentApiUrl := apiUrlManager.GetPostsApiURL() + "/" + postId + "/comments"
+
+	body, err := json.Marshal(comment)
+	if err != nil {
+		return err
+	}
+
+	commentResponse, errComment := apiManager.Post(commentApiUrl, body)
 	if errComment != nil {
-		return nil, errComment
+		return errComment
 	}
 
-	return nil, nil
+	if commentResponse.StatusCode == http.StatusOK {
+		defer commentResponse.Body.Close()
+		body, err := io.ReadAll(commentResponse.Body)
+		if err != nil {
+			return err
+		}
+
+		var comment models.Comment
+		err = json.Unmarshal(body, &comment)
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return nil
 }

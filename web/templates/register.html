@@ -3,7 +3,13 @@
 {{ define "content" }}
     <div class="form-container">
         {{ if .Success }}
-            <h2>Hoş geldin, {{ .Username }}!</h2>
+        {{if .Username}}
+        <span>Hoş geldin, {{.Username}}</span>
+        <a href="/logout">Çıkış Yap</a>
+    {{else}}
+        <a href="register.html">kayıt ol</a>
+        <a href="login.html">giriş yap</a>
+    {{end}}
         {{ else }}
             <h2>Kayıt Ol</h2>
             <form action="/register" method="POST">

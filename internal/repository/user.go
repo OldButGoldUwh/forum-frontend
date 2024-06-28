@@ -9,21 +9,35 @@ import (
 	"net/http"
 )
 
-func GetUsername() (string, error) {
+func GetUsername(r *http.Request) (string, error) {
 	fmt.Println("Get Username")
 	var username string
+	// Get token from cookie
 
-	apiManager := manager.NewAPIManager()
-
-	apiUrlManager := manager.NewAPIUrls()
-	userApiUrl := apiUrlManager.GetUserApiURL()
-
-	userResponse, err := apiManager.Get(userApiUrl)
+	cookie, err := r.Cookie("token")
 
 	if err != nil {
 		fmt.Println("Error:", err)
 		return username, err
 	}
+
+	token := cookie.Value
+
+	apiManager := manager.NewAPIManager()
+	apiManager.SetUserToken(token)
+	apiUrlManager := manager.NewAPIUrls()
+	userApiUrl := apiUrlManager.GetUserApiURL()
+
+	userResponse, err := apiManager.Get(userApiUrl)
+
+	fmt.Println("User API URL:", userApiUrl)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return username, err
+	}
+
+	fmt.Println("User Response:", userResponse)
 
 	if userResponse.StatusCode == http.StatusOK {
 		defer userResponse.Body.Close()
@@ -46,7 +60,7 @@ func GetUsername() (string, error) {
 
 		username = user.Username
 	}
-
+	fmt.Println("Username:", username)
 	return username, nil
 
 }
