@@ -29,6 +29,8 @@ func main() {
 	router.HandleFunc("/add-post", handler.AddPostSubmitHandler).Methods("POST")
 	//router.HandleFunc("/search", handler.SearchHandler).Methods("GET")
 	router.HandleFunc("/add-comment", handler.AddCommentHandler).Methods("POST")
+	router.HandleFunc("like-post", handler.LikePostHandler).Methods("POST")
+	router.HandleFunc("/dislike-post", handler.DislikePostHandler).Methods("POST")
 
 	// Starting the server
 	log.Println("Starting server on :8081")
